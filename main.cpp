@@ -20,7 +20,7 @@ int main(int argc, const char * argv[]) {
     string sentence;
     set <string> sentences;
     
-    ifstream file("afile.dat");
+    ifstream file("afile.txt");
     
     if(file.is_open())
     {
@@ -79,6 +79,7 @@ int main(int argc, const char * argv[]) {
         }else{
             head=moveleft(head);
         }
+        system("CLS");
         if(done(food,head)){head=inclen(head,food);food=chakfood(food,head);}
         else if(checktakker(head)){cout<<"YOU LOST!";break;}
         displaymat(head,food);
@@ -88,6 +89,7 @@ int main(int argc, const char * argv[]) {
         if(tempval=='a'||tempval=='s'||tempval=='w'||tempval=='d')ch=tempval;
         else {flag=push();break;}
     }
+    out="";
     if(flag==1){
         int x,y;
         while(head!=NULL){
@@ -104,7 +106,7 @@ int main(int argc, const char * argv[]) {
         out+=' ';
         out+=to_string(y);
         ofstream outfile;
-        outfile.open("afile.dat",ios::in);
+        outfile.open("afile.txt", ios::trunc);
         outfile << out;
         cout<<out<<endl;
         outfile.close();
