@@ -181,7 +181,7 @@ snake *moveleft(snake *head){
 }
 snake *moveright(snake *head){
     int x=head->y+1;
-    if(x>20){
+    if(x>19){
         x=0;
     }
     head=moveahead(head, head->x, x);
@@ -189,7 +189,7 @@ snake *moveright(snake *head){
 }
 snake *movedown(snake *head){
     int x=head->x+1;
-    if(x>20){
+    if(x>19){
         x=0;
     }
     head=moveahead(head, x, head->y);
