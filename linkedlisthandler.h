@@ -101,7 +101,7 @@ food *getfoodp(string t){
             i++;
         }
     }
-    cout<<"Food="<<temp1<<temp2<<endl;
+    //cout<<"Food="<<temp1<<temp2<<endl;
     if(temp1<20&&temp2<20&&temp1>0&&temp2>0){
         head->x=temp1;
         head->y=temp2;}
@@ -217,10 +217,10 @@ food *chakfood(food *head,snake *snakehead){
     if(head==NULL){
         head=new food;
         int x=rand()%20,y=rand()%20;
-        cout<<x<<" "<<y<<endl<<endl;
+        //cout<<x<<" "<<y<<endl<<endl;
         while(1){
             if(x>=0&&y>=0&&x<20&&y<20&&lastx!=x&&lasty!=y)if( notonsnkae(x,y,snakehead)==true)break;
-            cout<<"here"<<x<<" "<<y<<endl;
+            //cout<<"here"<<x<<" "<<y<<endl;
             lasty=y;lastx=x;
             x=rand()%20;y=rand()%20;
             
@@ -242,6 +242,15 @@ food *chakfood(food *head,snake *snakehead){
         
     }
     return head;
+}
+snake *reversehead(snake *head){
+    snake *h1=new snake;
+    h1=NULL;
+    while(head!=NULL){
+        h1=getval(head, head->x, head->y);
+        head=head->next;
+    }
+    return h1;
 }
 bool done(food *f,snake *h1){
     if(h1->x==f->x&&h1->y==f->y)return true;
