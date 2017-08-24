@@ -7,8 +7,35 @@
 //
 #include "linkedlisthandler.h"
 #include <iostream>
+#include <fstream>
 #include  <stdlib.h>
+#include <set>
+#include <algorithm>
+#include <cctype>
+
+#include <string>
 int main(int argc, const char * argv[]) {
+    /*ifstream infile;
+    infile.open("afile.dat");*/
+    string sentence;
+    set <string> sentences;
+    
+    ifstream file("afile.dat");
+    
+    if(file.is_open())
+    {
+        //while(!file.eof())
+        //{
+            getline(file, sentence);
+            //sentence.erase(remove_if(sentence.begin(), sentence.end(), sentence.end());
+            //sentences.insert(sentence);
+        //}
+    }
+    
+    file.close(); //close file
+    
+    //infile.seekg(0,ios::beg);
+    
     int n=3,x=0,y=0;
     struct food *food=new struct food;
     struct snake *head=new snake;
@@ -20,43 +47,29 @@ int main(int argc, const char * argv[]) {
         x++;
     }
     food=new struct food;
-    food=NULL;
-    //food->x=x;
-    //food->y=0;*/
-    //cout<<x<<endl;
-    //head=inclen(head,food);
-    //food=chakfood(food,head);
-    //display(head);
-   // cin>>x>>y;
-    //cout<<checktakker(head)<<endl;
-    //display(head);
-    //displaymat(head,food);
-    //cout<<endl;
-    //display(head);
+    food=NULL;food=chakfood(food,head);
+    string out;char ch;
+    cout<<"Do you want to continue from previous saved game then press y \n";
+    cin>>ch;
+    cout<<endl;
+    cin.ignore();
+    //infile >> out;
+    //cout<<out<<endl;
+    if(ch=='y'){
+        //cout<<"Hello";
+        out=sentence;
+        cout<<out<<endl;
+        head=getsnakep(out);
+        food=getfoodp(out);
+    }
+       int flag=0;
     
-    //head=movedown(head);
-    //cout<<endl;
-    
-    //cout<<endl;
-    //displaymat(head,food);
-    //cout<<endl;
-    //display(head);
-    //head=moveright(head);
-    //head=moveleft(head);
-    //head=moveup(head);
-    //cout<<checktakker(head)<<endl;
-    //displaymat(head);
-    //display(head);
-    food=chakfood(food,head);
     displaymat(head,food);
-    char ch;
+    cout<<"Enter next move\n";
     cin>>ch;
     while(ch=='a'||ch=='s'||ch=='d'||ch=='w'){
         if(ch=='w'){
-            
             head=moveup(head);
-            //if(checkcolide(temp))cout<<"INVALID MOVE"<<endl;
-            //else head=temp;
         }
         else if(ch=='s'){
             head=movedown(head);
@@ -66,12 +79,38 @@ int main(int argc, const char * argv[]) {
         }else{
             head=moveleft(head);
         }
-        
         if(done(food,head)){head=inclen(head,food);food=chakfood(food,head);}
         else if(checktakker(head)){cout<<"YOU LOST!";break;}
         displaymat(head,food);
         cout<<endl;
-        cin>>ch;
+        char tempval;
+        cin>>tempval;
+        if(tempval=='a'||tempval=='s'||tempval=='w'||tempval=='d')ch=tempval;
+        else {flag=push();break;}
     }
+    if(flag==1){
+        int x,y;
+        while(head!=NULL){
+            x=head->x;y=head->y;
+            out+=to_string(x);
+            out+=' ';
+            out+=to_string(y);
+            if(head->next!=NULL)out+='*';
+            head=head->next;
+        }
+        out+='#';
+        x=food->x;y=food->y;
+        out+=to_string(x);
+        out+=' ';
+        out+=to_string(y);
+        ofstream outfile;
+        outfile.open("afile.dat",ios::in);
+        outfile << out;
+        cout<<out<<endl;
+        outfile.close();
+        }
+    
+   
+
     return 0;
 }

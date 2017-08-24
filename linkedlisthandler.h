@@ -10,6 +10,9 @@
 #define linkedlisthandler_h
 #include<iostream>
 #include <stdlib.h>
+#include<string>
+#define mar 10
+#define mac 10
 using namespace std;
 struct snake{
     int x,y;
@@ -32,6 +35,85 @@ snake *getval(snake *head,int x,int y){
     }
     return head;
 }
+int push(){
+    cout<<"If u want to save then press s else any other key\n";
+    char t;
+    cin>>t;
+    if(t=='s')
+    return 1;
+    else return 0;
+}
+snake *revesnake(snake *head){
+    struct snake *temp=new snake;
+    temp=NULL;
+    while(head!=NULL){
+        temp=getval(temp,head->x,head->y);
+        head=head->next;
+    }
+    return temp;
+}
+snake *getsnakep(string t){
+    struct snake *head=new snake;
+    int l=t.size(),x,y;
+    l=t.find('#');
+    //cout<<l<<endl;
+    head=NULL;
+    for(int i=0;i<l;i++){
+        int temp1=0,temp2=0;
+        while(i<l&&t.at(i)!=' '){
+            temp1=temp1*10+(t.at(i)-'0');
+            //cout<<t.at(i);
+            i++;
+        }
+       // cout<<t.at(--i);
+        if(i<l&&t.at(i)==' ')i++;
+        while(i<l&&(t.at(i)!='#'&&t.at(i)!='*')){
+            //cout<<"This"<<t.at(i)<<endl;
+            temp2=temp2*10+(t.at(i)-'0');
+            i++;
+        }
+        x=temp1;y=temp2;
+        head=getval(head, x, y);
+        
+                //cout<<temp1<<" "<<temp2<<endl;
+    }
+    head=revesnake(head);
+    return head;
+}
+
+food *getfoodp(string t){
+    struct food *head=new food;
+    //head=NULL;
+    int l=t.size();
+    int s=t.find('#');
+    int temp1=0,temp2=0;
+    //cout<<"Food="<<t.at(s)<<endl;
+    for(int i=s+1;i<l;i++){
+        while(i<l&&t.at(i)!=' '){
+            temp1=temp1*10+(t.at(i)-'0');
+            
+            i++;
+        }
+        i++;
+        while(i<l){
+            temp2=temp2*10+(t.at(i)-'0');
+            //cout<<t.at(i);
+            i++;
+        }
+    }
+    cout<<"Food="<<temp1<<temp2<<endl;
+    if(temp1<20&&temp2<20&&temp1>0&&temp2>0){
+        head->x=temp1;
+        head->y=temp2;}
+    else {
+            head->x=0;
+            head->y=0;
+        }
+    
+    
+    return head;
+}
+
 void display( snake *head){
     while(head!=NULL){
         cout<<head->x<<" "<<head->y<<endl;
@@ -50,15 +132,19 @@ void displaymat(snake *head,food *ro){
     head=t;
     if((ro->x==head->x&&ro->y==head->y))arr[ro->x][ro->y]=2;
     else if(ro!=NULL&&arr[ro->x][ro->y]!=2)arr[ro->x][ro->y]=3;
+    for(int i=0;i<22;i++)cout<<"-";
+    cout<<endl;
     for(int i=0;i<20;i++){
+        cout<<"|";
         for(int j=0;j<20;j++){
             if(arr[i][j]==1)cout<<"#";
             else if(arr[i][j]==3)cout<<"F";
             else if(arr[i][j]==2)cout<<"A";
             else cout<<" ";
         }
-        cout<<endl;
+        cout<<"|"<<endl;
     }
+    for(int i=0;i<22;i++)cout<<"-";
 }
 snake *moveahead(snake *head,int x,int y){
     
@@ -76,6 +162,7 @@ snake *moveahead(snake *head,int x,int y){
     }
         return temp;
 }
+
 snake *moveup(snake *head){
     int x=head->x-1;
     if(x<0){
