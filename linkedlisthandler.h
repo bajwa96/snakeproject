@@ -54,8 +54,8 @@ snake *revesnake(snake *head){
 }
 snake *getsnakep(string t){
     struct snake *head=new snake;
-    int l=t.size(),x,y;
-    l=t.find('#');
+    int l=(int)t.size(),x,y;
+    l=(int)t.find('#');
     //cout<<l<<endl;
     head=NULL;
     for(int i=0;i<l;i++){
@@ -84,8 +84,8 @@ snake *getsnakep(string t){
 food *getfoodp(string t){
     struct food *head=new food;
     //head=NULL;
-    int l=t.size();
-    int s=t.find('#');
+    int l=(int)t.size();
+    int s=(int)t.find('#');
     int temp1=0,temp2=0;
     //cout<<"Food="<<t.at(s)<<endl;
     for(int i=s+1;i<l;i++){
@@ -101,16 +101,14 @@ food *getfoodp(string t){
             i++;
         }
     }
-    cout<<"Food="<<temp1<<temp2<<endl;
-    if(temp1<20&&temp2<20&&temp1>0&&temp2>0){
+    //cout<<"Food="<<temp1<<temp2<<endl;
+    if(temp1<20&&temp2<20&&temp1>=0&&temp2>=0){
         head->x=temp1;
         head->y=temp2;}
     else {
             head->x=0;
             head->y=0;
         }
-    
-    
     return head;
 }
 
@@ -123,15 +121,17 @@ void display( snake *head){
 void displaymat(snake *head,food *ro){
     snake *t=head;
     int arr[20][20]={0};
-    arr[head->x][head->y]=2;
-    head=head->next;
+    if(head->x==head->next->x&&head->y==head->next->y){
+        arr[head->x][head->y]=2;
+        head=head->next->next;}else{
+            arr[head->x][head->y]=2;head=head->next;
+        }
     while(head!=NULL){
         arr[head->x ][ head->y]=1;
         head=head->next;
     }
     head=t;
-    if((ro->x==head->x&&ro->y==head->y))arr[ro->x][ro->y]=2;
-    else if(ro!=NULL&&arr[ro->x][ro->y]!=2)arr[ro->x][ro->y]=3;
+    if(ro!=NULL&&arr[ro->x][ro->y]!=2)arr[ro->x][ro->y]=3;
     for(int i=0;i<22;i++)cout<<"-";
     cout<<endl;
     for(int i=0;i<20;i++){
@@ -139,7 +139,7 @@ void displaymat(snake *head,food *ro){
         for(int j=0;j<20;j++){
             if(arr[i][j]==1)cout<<"#";
             else if(arr[i][j]==3)cout<<"F";
-            else if(arr[i][j]==2)cout<<"A";
+            else if(arr[i][j]==2)cout<<"H";
             else cout<<" ";
         }
         cout<<"|"<<endl;
@@ -147,7 +147,6 @@ void displaymat(snake *head,food *ro){
     for(int i=0;i<22;i++)cout<<"-";
 }
 snake *moveahead(snake *head,int x,int y){
-    
     snake *temp=head;
     int lastx,lasty;
     while (head!=NULL) {
@@ -155,10 +154,7 @@ snake *moveahead(snake *head,int x,int y){
         head->x=x;
         head->y=y;
         x=lastx;y=lasty;
-        
-        
         head=head->next;
-        
     }
         return temp;
 }
@@ -206,7 +202,6 @@ bool checktakker(snake *head){
 }
 bool notonsnkae(int x,int y,snake *head){
     while(head!=NULL){
-        //cout<<"f"<<x<<" "<<head->x<<" "<<y<<" "<<head->y<<endl;
         if((head->x==x&&head->y==y))return false;
         head=head->next;
     }
@@ -217,10 +212,8 @@ food *chakfood(food *head,snake *snakehead){
     if(head==NULL){
         head=new food;
         int x=rand()%20,y=rand()%20;
-        cout<<x<<" "<<y<<endl<<endl;
         while(1){
             if(x>=0&&y>=0&&x<20&&y<20&&lastx!=x&&lasty!=y)if( notonsnkae(x,y,snakehead)==true)break;
-            cout<<"here"<<x<<" "<<y<<endl;
             lasty=y;lastx=x;
             x=rand()%20;y=rand()%20;
             
@@ -230,10 +223,8 @@ food *chakfood(food *head,snake *snakehead){
     }else{
         lastx=head->x,lasty=head->y;
         int x=rand()%20,y=rand()%20;
-        //cout<<x<<" "<<y<<endl<<endl;
         while(1){
             if(x>=0&&y>=0&&x<20&&y<20)if(x!=lastx&&y!=lasty)if( notonsnkae(x,y,snakehead)==true )break;
-            //cout<<x<<" "<<y<<endl;
             x=rand()%20;y=rand()%20;
         }
     
@@ -243,15 +234,22 @@ food *chakfood(food *head,snake *snakehead){
     }
     return head;
 }
+snake *reversehead(snake *head){
+    snake *h1=new snake;
+    h1=NULL;
+    while(head!=NULL){
+        h1=getval(head, head->x, head->y);
+        head=head->next;
+    }
+    return h1;
+}
 bool done(food *f,snake *h1){
     if(h1->x==f->x&&h1->y==f->y)return true;
     return false;
 }
 snake *inclen(snake *h1,food *f){
-    //cout<<h1->x<<f->x;
     if(h1->x==f->x&&h1->y==f->y){
         h1=getval(h1, f->x, f->y);
-        //h1=moveahead(h1,f->x, f->y);
     }
     return h1;
 }
