@@ -10,7 +10,18 @@
 #define linkedlisthandler_h
 #include<iostream>
 #include <stdlib.h>
+#include <fstream>
 #include<string>
+#include <thread>
+#include <fstream>
+#include <curses.h>
+#include  <stdlib.h>
+#include <set>
+#include <algorithm>
+#include <cctype>
+#include <thread>
+#include <chrono>
+#include <string>
 #define mar 10
 #define mac 10
 using namespace std;
@@ -253,5 +264,39 @@ snake *inclen(snake *h1,food *f){
     }
     return h1;
 }
+void saveit(snake *head,struct food *food){
+    string out="";
+    int x,y;
+    while(head!=NULL){
+        x=head->x;y=head->y;
+        out+=to_string(x);
+        out+=' ';
+        out+=to_string(y);
+        if(head->next!=NULL)out+='*';
+        head=head->next;
+    }
+    out+='#';
+    x=food->x;y=food->y;
+    out+=to_string(x);
+    out+=' ';
+    out+=to_string(y);
+    ofstream outfile;
+    outfile.open("afile.txt", ios::trunc);
+    outfile << out;
+    outfile.close();
 
+}
+string readfromfile(){
+    string sentences;
+    //set <string> sentences;
+    ifstream file("afile.txt");
+    if(file.is_open())
+    {
+        getline(file, sentences);
+    }
+    file.close();
+
+    return sentences;
+    
+}
 #endif /* linkedlisthandler_h */
