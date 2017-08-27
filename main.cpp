@@ -6,27 +6,11 @@
 //  Copyright © 2017 Navroop Singh Bajwa. All rights reserved.
 //
 #include "linkedlisthandler.h"
-#include <iostream>
-#include <fstream>
-#include <curses.h>
-#include  <stdlib.h>
-#include <set>
-#include <algorithm>
-#include <cctype>
-#include <thread>
-#include <chrono>
-#include <string>
 int main(int argc, const char * argv[]) {
-    char ch;
-    string sentence;string out;
-    set <string> sentences;
-    ifstream file("afile.txt");
-    if(file.is_open())
-    {
-            getline(file, sentence);
-    }
-    file.close();
     int n=3,x=0,y=0;
+    char ch;
+    string sentence=readfromfile(),out;
+    //snake and food declaration
     struct food *food=new struct food;
     struct snake *head=new snake;
     head=NULL;
@@ -34,15 +18,14 @@ int main(int argc, const char * argv[]) {
     while(n--){
         head=getval(head, x, y);
         x++;
-    }
+    }//pre set-snake formation
     food=new struct food;
     food=NULL;
-    food=chakfood(food,head);
-    
-    
+    food=chakfood(food,head);//food location
     struct snake *thead=new snake;
     thead=NULL;
     struct food *tfood=new struct food;
+    
     if(sentence.length()>0){
         out=sentence;
         thead=getsnakep(out);
@@ -55,9 +38,7 @@ int main(int argc, const char * argv[]) {
             head=thead;
             food=tfood;
         }
-
     }
-    
     cout<<"Enter s for moving downward\nEnter w for moving upward\nEnter a for moving left\nEnter d for moving right\nEnter r for reverse the snake\nESC:Exit\nA:HEAD\n#:BODY\nF:FOOD\n";
         int flag=0,co=0;
     displaymat(head,food);
@@ -95,25 +76,6 @@ int main(int argc, const char * argv[]) {
         if(co==10){food=chakfood(food, head);co=0;}
     }
     out="";
-    if(flag==1){
-        int x,y;
-        while(head!=NULL){
-            x=head->x;y=head->y;
-            out+=to_string(x);
-            out+=' ';
-            out+=to_string(y);
-            if(head->next!=NULL)out+='*';
-            head=head->next;
-        }
-        out+='#';
-        x=food->x;y=food->y;
-        out+=to_string(x);
-        out+=' ';
-        out+=to_string(y);
-        ofstream outfile;
-        outfile.open("afile.txt", ios::trunc);
-        outfile << out;
-        outfile.close();
-        }
+    if(flag==1) saveit(head,food);
     return 0;
 }
