@@ -9,7 +9,7 @@
 #include<conio.h>
 int main(int argc, const char * argv[]) {
     int n=3,x=0,y=0;
-    char ch;
+    int ch;
     string sentence=readfromfile(),out;
     //snake and food declaration
     struct food *food=new struct food;
@@ -33,9 +33,9 @@ int main(int argc, const char * argv[]) {
         tfood=getfoodp(out);
         displaymat(thead, tfood);
         cout<<endl<<"Do you want to continue from previous saved game then press y \n";
-      	ch=getch();
+      	char ch1=getch();
         cout<<endl;
-        if(ch=='y'){
+        if(ch1=='y'){
             head=thead;
             food=tfood;
         }
@@ -45,26 +45,27 @@ int main(int argc, const char * argv[]) {
     displaymat(head,food);
     cout<<"\nEnter next move\n";
     ch=getch();
-    
-    while(ch=='a'||ch=='s'||ch=='w'||ch=='d'||ch=='r'){
-        if(ch=='w'){
+    if(ch==224)ch=getch();
+    while(ch==77||ch==72||ch==75||ch==80||ch==114){
+        if(ch==72){
             head=moveup(head);
         }
-        else if(ch=='s'){
+        else if(ch==80){
             head=movedown(head);
         }
-        else if(ch=='d'){
+        else if(ch==77){
             head=moveright(head);
         }
-        else if(ch=='a'){
+        else if(ch==75){
             head=moveleft(head);
         }
-        else if(ch=='r'){
+        else if(ch==114){
             head=revesnake(head);
             system("CLS");
             displaymat(head,food);
             cout<<endl<<"\nEnter next move\n";
     		ch=getch();
+    		if(ch==224)ch=getch();
         }
         system("CLS");
         if(done(food,head)){head=inclen(head,food);
@@ -75,11 +76,12 @@ int main(int argc, const char * argv[]) {
         cout<<"Enter next move\n";
        
         if(kbhit()){
-		char tempval;
+		int tempval;
 		tempval=getch();
-        if(tempval=='a'||tempval=='s'||tempval=='w'||tempval=='d'||tempval=='r')ch=tempval;
+		if(tempval==224)tempval=getch();
+        if(tempval==77||tempval==72||tempval==75||tempval==80||tempval==114)ch=tempval;
         else {flag=push();break;}}
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
         co++;
         if(co==10){food=chakfood(food, head);co=0;}
     }
