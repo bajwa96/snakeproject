@@ -14,7 +14,6 @@
 #include<string>
 #include <thread>
 #include <fstream>
-#include <curses.h>
 #include  <stdlib.h>
 #include <set>
 #include <algorithm>
