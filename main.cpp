@@ -6,6 +6,7 @@
 //  Copyright © 2017 Navroop Singh Bajwa. All rights reserved.
 //
 #include "linkedlisthandler.h"
+#include<conio.h>
 int main(int argc, const char * argv[]) {
     int n=3,x=0,y=0;
     char ch;
@@ -32,7 +33,7 @@ int main(int argc, const char * argv[]) {
         tfood=getfoodp(out);
         displaymat(thead, tfood);
         cout<<endl<<"Do you want to continue from previous saved game then press y \n";
-        cin>>ch;
+      	ch=getch();
         cout<<endl;
         if(ch=='y'){
             head=thead;
@@ -43,7 +44,8 @@ int main(int argc, const char * argv[]) {
         int flag=0,co=0;
     displaymat(head,food);
     cout<<"\nEnter next move\n";
-    cin>>ch;
+    ch=getch();
+    
     while(ch=='a'||ch=='s'||ch=='w'||ch=='d'||ch=='r'){
         if(ch=='w'){
             head=moveup(head);
@@ -59,19 +61,25 @@ int main(int argc, const char * argv[]) {
         }
         else if(ch=='r'){
             head=revesnake(head);
+            system("CLS");
+            displaymat(head,food);
+            cout<<endl<<"\nEnter next move\n";
+    		ch=getch();
         }
-        system("clear");
+        system("CLS");
         if(done(food,head)){head=inclen(head,food);
             food=chakfood(food,head);co=0;}
         else if(checktakker(head)){cout<<"YOU LOST!";break;}
         displaymat(head,food);
         cout<<endl;
         cout<<"Enter next move\n";
-        char tempval;
-        cin>>tempval;
+       
+        if(kbhit()){
+		char tempval;
+		tempval=getch();
         if(tempval=='a'||tempval=='s'||tempval=='w'||tempval=='d'||tempval=='r')ch=tempval;
-        else {flag=push();break;}
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        else {flag=push();break;}}
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         co++;
         if(co==10){food=chakfood(food, head);co=0;}
     }
