@@ -298,4 +298,119 @@ string readfromfile(){
     return sentences;
     
 }
+snake *copysnake(snake *head){
+    struct snake *temp=new snake;
+    temp=NULL;
+    while(head!=NULL){
+        snake *t=new snake;
+        t->x=head->x;
+        t->y=head->y;
+        if(temp==NULL){
+            t->next=NULL;
+            temp=t;
+        }else{
+            t->next=temp;
+            temp=t;
+        }
+        head=head->next;
+    }
+   // temp=revesnake(temp);
+    return temp;
+}
+
+
+snake *cuthead(snake *head){
+    snake *t=head;
+    int x=head->x,y=head->y;
+    if(head!=NULL)head=head->next;
+    while(head!=NULL){
+        if(head->x==x&&head->y==y)head->next=NULL;
+        head=head->next;
+    }
+    return t;
+}
+
+char getnextmove(snake *head,food *ro){
+    food *roti=new food;
+    roti->x=ro->x;
+    roti->y=ro->y;
+    int in=0;
+    char t[10];
+    char up,dn,le,rt;
+    up=dn=le=rt='1';
+    snake *xhead=new snake;
+    snake *newxhead=new snake;
+    int y=head->x,x=head->y;
+    int fy=roti->x,fx=roti->y;
+    
+    xhead=NULL;
+    xhead=copysnake(head);
+    
+    newxhead=NULL;
+    newxhead=copysnake(xhead);
+    if(checktakker(moveup(newxhead))==false){up='w';}
+    
+    newxhead=NULL;
+    newxhead=copysnake(xhead);
+    if(checktakker(movedown(newxhead))==false){dn= 's';}
+    
+    newxhead=NULL;
+    newxhead=copysnake(xhead);
+    if(checktakker(moveright(newxhead))==false){rt='d';}
+    
+    newxhead=NULL;
+    newxhead=copysnake(xhead);
+    if(checktakker(moveleft(newxhead))==false){le='a';}
+    
+    
+    
+    
+    //cout<<"head x = "<<x<<"y = "<<y<<endl<<"food x= "<<fx<<" y= "<<fy<<endl;
+    //cout<<"up "<<up<<endl<<"down "<<dn<<endl<<"right "<<rt<<endl<<"left "<<le<<endl;
+    
+    if(x>=fx){ //(x>fx)
+        if(y>fy){
+            if(up=='w'){t[in++]=up;}
+            if(dn=='s'){t[in++]=dn;}
+        }
+        else if(y<fy){
+            if(dn=='s'){t[in++]=dn;}
+            if(up=='w'){t[in++]=up;}
+        }
+        if(le=='a'){t[in++]=le;}
+        else if(rt=='d'){t[in++]=rt;}
+        
+    }
+    if(x<=fx){
+        
+        if(y<fy){
+            if(dn=='s'){t[in++]=dn;}
+            if(up=='w'){t[in++]=up;}
+        }
+        else if(y>fy){
+            if(up=='w'){t[in++]=up;}
+            if(dn=='s'){t[in++]=dn;}
+        }
+        if(rt=='d'){t[in++]=rt;}
+        else if(le=='a'){t[in++]=le;}
+        
+        
+    }
+    
+    
+    
+    
+    if(up=='w'){t[in++]=up;}
+    if(dn=='s'){t[in++]=dn;}
+    if(rt=='d'){t[in++]=rt;}
+    if(le=='a'){t[in++]=le;}
+    t[in]='\0';
+    
+    if(in>0)return t[0];
+    if(in==0)return '2';
+    return '2';
+    
+}
+
+
 #endif /* linkedlisthandler_h */

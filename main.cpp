@@ -69,8 +69,11 @@ int main(int argc, const char * argv[]) {
         }
         system("CLS");
         if(done(food,head)){head=inclen(head,food);
-            food=chakfood(food,head);co=0;}
-        else if(checktakker(head)){cout<<"YOU LOST!";break;}
+            food=chakfood(food,head);}
+        else if(checktakker(head)){head=cuthead(head);co++;  
+		if(co==2){
+		cout<<"YOU LOST!";break;}
+		}
         displaymat(head,food);
         cout<<endl;
         cout<<"Enter next move\n";
@@ -80,10 +83,17 @@ int main(int argc, const char * argv[]) {
 		tempval=getch();
 		if(tempval==224)tempval=getch();
         if(tempval==77||tempval==72||tempval==75||tempval==80||tempval==114)ch=tempval;
-        else {flag=push();break;}}
+        else {flag=push();break;}
+		}
+		else{
+        	char move=getnextmove(head,food);
+        	if(move=='w')ch=72;
+        	if(move=='s')ch=80;
+        	if(move=='d')ch=77;
+        	if(move=='a')ch=75;
+		}
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        co++;
-        if(co==10){food=chakfood(food, head);co=0;}
+        
     }
     out="";
     if(flag==1) saveit(head,food);
