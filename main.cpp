@@ -41,7 +41,7 @@ int main(int argc, const char * argv[]) {
         }
     }
     cout<<"Enter s for moving downward\nEnter w for moving upward\nEnter a for moving left\nEnter d for moving right\nEnter r for reverse the snake\nESC:Exit\nA:HEAD\n#:BODY\nF:FOOD\n";
-        int flag=0,co=0;
+        int flag=0,co=0,speed=300;
     displaymat(head,food);
     cout<<"\nEnter next move\n";
     ch=getch();
@@ -69,8 +69,10 @@ int main(int argc, const char * argv[]) {
         }
         system("CLS");
         if(done(food,head)){head=inclen(head,food);
-            food=chakfood(food,head);}
-        else if(checktakker(head)){head=cuthead(head);co++;  
+            food=chakfood(food,head);if(speed>100)speed-=50;}
+        else if(checktakker(head)){
+        speed+=100;
+		head=cuthead(head);co++;  
 		if(co==2){
 		cout<<"YOU LOST!";break;}
 		}
@@ -92,7 +94,7 @@ int main(int argc, const char * argv[]) {
         	if(move=='d')ch=77;
         	if(move=='a')ch=75;
 		}
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(speed));
         
     }
     out="";
