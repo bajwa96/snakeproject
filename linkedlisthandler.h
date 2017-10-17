@@ -20,7 +20,7 @@
 #include <cctype>
 #include <thread>
 #include <chrono>
-#include <string>
+#include <string.h>
 #define mar 10
 #define mac 10
 using namespace std;
@@ -31,6 +31,49 @@ struct snake{
 struct food{
     int x,y;
 };
+
+struct route{
+    char data;
+    struct route *next;
+};
+route *push(route *head,char d){
+    route *t=new route;
+    t->data=d;
+    if(head==NULL){
+        t->next=NULL;
+        return t;
+    }else{
+        head->next=t;
+        t->next=NULL;
+        return t;
+    }
+}
+route *pop(route *head){
+    if(head!=NULL){route *hnext=head->next;free(head);return hnext;}
+    return NULL;
+}
+void dele(struct route **head){
+    struct route  *current = *head,*next;
+    
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    
+    /* deref head_ref to affect the real head back
+     in the caller. */
+    *head = NULL;
+    
+}
+void display(route *rhead){
+    if(rhead!=NULL){
+        cout<<rhead->data<<" ";
+        display(rhead->next);
+    }
+}
+
 snake *getval(snake *head,int x,int y){
     struct snake *t1=new snake;
     t1->x=x;
@@ -279,6 +322,9 @@ void saveit(snake *head,struct food *food){
     out+=to_string(x);
     out+=' ';
     out+=to_string(y);
+    for(int i=0;i<(int)out.length();i++){
+        out[i]=out[i]+='Z';
+    }
     ofstream outfile;
     outfile.open("afile.txt", ios::trunc);
     outfile << out;
@@ -330,12 +376,29 @@ snake *cuthead(snake *head){
     return t;
 }
 
-char getnextmove(snake *head,food *ro){
+void dele(struct snake **head){
+    struct snake  *current = *head;
+    struct snake *next;
+    
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    
+    /* deref head_ref to affect the real head back
+     in the caller. */
+    *head = NULL;
+    
+}
+
+char* getnextmove(snake *head,food *ro){
     food *roti=new food;
     roti->x=ro->x;
     roti->y=ro->y;
     int in=0;
-    char t[10];
+    char *t=new char[10];
     char up,dn,le,rt;
     up=dn=le=rt='1';
     snake *xhead=new snake;
@@ -349,19 +412,23 @@ char getnextmove(snake *head,food *ro){
     newxhead=NULL;
     newxhead=copysnake(xhead);
     if(checktakker(moveup(newxhead))==false){up='w';}
+    dele(&newxhead);
     
     newxhead=NULL;
     newxhead=copysnake(xhead);
     if(checktakker(movedown(newxhead))==false){dn= 's';}
+    dele(&newxhead);
     
     newxhead=NULL;
     newxhead=copysnake(xhead);
     if(checktakker(moveright(newxhead))==false){rt='d';}
+    dele(&newxhead);
     
     newxhead=NULL;
     newxhead=copysnake(xhead);
     if(checktakker(moveleft(newxhead))==false){le='a';}
-    
+    dele(&newxhead);
+    dele(&xhead);
     
     
     
@@ -373,12 +440,12 @@ char getnextmove(snake *head,food *ro){
             if(up=='w'){t[in++]=up;}
             if(dn=='s'){t[in++]=dn;}
         }
-        else if(y<fy){
+        if(y<fy){
             if(dn=='s'){t[in++]=dn;}
             if(up=='w'){t[in++]=up;}
         }
         if(le=='a'){t[in++]=le;}
-        else if(rt=='d'){t[in++]=rt;}
+        if(rt=='d'){t[in++]=rt;}
         
     }
     if(x<=fx){
@@ -387,12 +454,12 @@ char getnextmove(snake *head,food *ro){
             if(dn=='s'){t[in++]=dn;}
             if(up=='w'){t[in++]=up;}
         }
-        else if(y>fy){
+        if(y>fy){
             if(up=='w'){t[in++]=up;}
             if(dn=='s'){t[in++]=dn;}
         }
         if(rt=='d'){t[in++]=rt;}
-        else if(le=='a'){t[in++]=le;}
+        if(le=='a'){t[in++]=le;}
         
         
     }
@@ -406,10 +473,97 @@ char getnextmove(snake *head,food *ro){
     if(le=='a'){t[in++]=le;}
     t[in]='\0';
     
-    if(in>0)return t[0];
-    if(in==0)return '2';
-    return '2';
+    return t;
     
+}
+char *removeduplicay(char t[]){
+    char *ret=new char[10];
+    int ind=0;
+    for(int i=0;i<strlen(t);i++){
+        int flag=0;
+        for(int j=0;j<strlen(ret);j++){
+            if(t[i]==ret[j]){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0)ret[ind++]=t[i];
+        
+    }
+    return ret;
+}
+
+route *predict(snake *head,food *roti){
+    
+    snake *xhead=new snake;
+    snake *newxhead=new snake;
+    xhead=NULL;
+    xhead=copysnake(head);
+    char *predictions=new char[10];
+    predictions=getnextmove(head,roti);
+    //cout<<predictions<<" ";
+    predictions=removeduplicay(predictions);
+    //cout<<predictions<<endl;
+    if(strlen(predictions)>0){
+        for(int i=0;i<strlen(predictions);i++){
+            route *rhead=NULL,*tail=NULL;
+            newxhead=NULL;
+            newxhead=copysnake(xhead);
+            
+            rhead=push(rhead,predictions[i]);
+            tail=rhead;
+            
+            if(predictions[i]=='w'){
+                newxhead=moveup(newxhead);
+            }
+            if(predictions[i]=='s'){
+                newxhead=movedown(newxhead);
+            }
+            if(predictions[i]=='d'){
+                newxhead=moveright(newxhead);
+            }
+            if(predictions[i]=='a'){
+                newxhead=moveleft(newxhead);
+            }
+            while(roti->x!=newxhead->x||roti->y!=newxhead->y){
+                char *t=getnextmove(newxhead, roti);
+                
+                if(strlen(t)>0){
+                    
+                    tail=push(tail, t[0]);
+                    
+                    if(t[0]=='w'){
+                        newxhead=moveup(newxhead);
+                    }
+                    if(t[0]=='s'){
+                        newxhead=movedown(newxhead);
+                    }
+                    if(t[0]=='d'){
+                        newxhead=moveright(newxhead);
+                    }
+                    if(t[0]=='a'){
+                        newxhead=moveleft(newxhead);
+                    }
+                }else break;
+            }
+            if(roti->x==newxhead->x&&roti->y==newxhead->y) {
+                dele(&newxhead);
+                dele(&xhead);
+                return rhead;
+            }
+            dele(&rhead);
+            dele(&newxhead);
+        }
+    }
+    dele(&newxhead);
+    dele(&xhead);
+    
+    cout<<"I dnt think I am correct\n";
+    route *excption=NULL;
+    if(strlen(predictions)>2){excption=push(excption, predictions[2]); return excption;}
+    if(strlen(predictions)>1){excption=push(excption, predictions[1]); return excption;}
+    if(strlen(predictions)>0){excption=push(excption, predictions[0]); return excption;}
+    return NULL;
 }
 
 

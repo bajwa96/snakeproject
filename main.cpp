@@ -28,6 +28,9 @@ int main(int argc, const char * argv[]) {
     struct food *tfood=new struct food;
     
     if(sentence.length()>0){
+    	for(int i=0;i<(int)sentence.length();i++){
+            sentence[i]=sentence[i]-'Z';
+        }
         out=sentence;
         thead=getsnakep(out);
         tfood=getfoodp(out);
@@ -45,6 +48,8 @@ int main(int argc, const char * argv[]) {
     displaymat(head,food);
     cout<<"\nEnter next move\n";
     ch=getch();
+    route *updated=NULL;
+	int flagr=0;
     if(ch==224)ch=getch();
     while(ch==77||ch==72||ch==75||ch==80||ch==114){
         if(ch==72){
@@ -79,20 +84,26 @@ int main(int argc, const char * argv[]) {
         displaymat(head,food);
         cout<<endl;
         cout<<"Enter next move\n";
-       
+       	
         if(kbhit()){
 		int tempval;
 		tempval=getch();
 		if(tempval==224)tempval=getch();
         if(tempval==77||tempval==72||tempval==75||tempval==80||tempval==114)ch=tempval;
         else {flag=push();break;}
+        flagr=1;
+        
 		}
 		else{
-        	char move=getnextmove(head,food);
+			if(updated==NULL||flagr==1){updated=NULL;updated=predict(head,food);flagr=0;display(updated);
+        	cout<<endl;}
+			
+        	char move=updated->data;
         	if(move=='w')ch=72;
         	if(move=='s')ch=80;
         	if(move=='d')ch=77;
         	if(move=='a')ch=75;
+        	updated=pop(updated);
 		}
         std::this_thread::sleep_for(std::chrono::milliseconds(speed));
         
